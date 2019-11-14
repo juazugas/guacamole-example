@@ -32,6 +32,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.thorntail>2.5.0.Final</version.thorntail>
     </properties>
 
     <build>
@@ -86,6 +87,20 @@
 
             </plugin>
 
+            <!-- To create a runnable .jar -->
+            <plugin>
+                <groupId>io.thorntail</groupId>
+                <artifactId>thorntail-maven-plugin</artifactId>
+                <version>${version.thorntail}</version>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>package</goal>
+                    </goals>
+                  </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>
@@ -123,6 +138,17 @@
 		<version>1.7.7</version>
 	</dependency>
 
+    <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>undertow</artifactId>
+        <version>${version.thorntail}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>logging</artifactId>
+        <version>${version.thorntail}</version>
+    </dependency>
 
     </dependencies>
 
