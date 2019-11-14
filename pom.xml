@@ -150,6 +150,14 @@
         <version>${version.thorntail}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/io.thorntail/microprofile-config -->
+    <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>microprofile-config</artifactId>
+        <version>2.5.0.Final</version>
+    </dependency>
+
+
     </dependencies>
 
 </project>

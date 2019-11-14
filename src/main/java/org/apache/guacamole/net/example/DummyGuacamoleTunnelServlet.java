@@ -19,6 +19,8 @@
 
 package org.apache.guacamole.net.example;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.GuacamoleSocket;
@@ -28,6 +30,7 @@ import org.apache.guacamole.net.SimpleGuacamoleTunnel;
 import org.apache.guacamole.protocol.ConfiguredGuacamoleSocket;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 import org.apache.guacamole.servlet.GuacamoleHTTPTunnelServlet;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 /**
  * Simple tunnel example with hard-coded configuration parameters.
@@ -38,15 +41,17 @@ public class DummyGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
     protected GuacamoleTunnel doConnect(HttpServletRequest request) throws GuacamoleException {
 
         // guacd connection information
-        String hostname = "localhost";
-        int port = 4822;
+        String hostname = getConfigOrDefault("guacamole.connection.guacd.hostname", String.class, "localhost");
+        int port = getConfigOrDefault("guacamole.connection.guacd.port", int.class, 4822);
 
         // VNC connection information
         GuacamoleConfiguration config = new GuacamoleConfiguration();
         config.setProtocol("vnc");
-        config.setParameter("hostname", "localhost");
-        config.setParameter("port", "5901");
-        config.setParameter("password", "potato");
+        String vncHostname = getConfigOrDefault("guacamole.connection.vnc.hostname", String.class, "localhost");
+        config.setParameter("hostname", vncHostname);
+        String vncPort = getConfigOrDefault("guacamole.connection.vnc.port", String.class, "5901");
+        config.setParameter("port", vncPort);
+        // config.setParameter("password", "potato");
 
         // Connect to guacd, proxying a connection to the VNC server above
         GuacamoleSocket socket = new ConfiguredGuacamoleSocket(
@@ -59,5 +64,12 @@ public class DummyGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         return tunnel;
 
     }
+    
+    private <T> T getConfigOrDefault(String property, Class<T> clazz, T defaultValue) {
+        return Optional.ofNullable(ConfigProvider.getConfig())
+                .flatMap(config -> config.getOptionalValue(property, clazz))
+                .orElse(defaultValue);
+    }
+
 
 }
